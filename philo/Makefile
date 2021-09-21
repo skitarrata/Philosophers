@@ -1,7 +1,6 @@
-NAME = push_swap
-VET =  5 2 4 6 1
+NAME = philosophers
+PAR =  5 2 4
 
-LIBFT = ./libft.a
 #FLAGS = -Wall -Werror -Wextra
 
 SRCS = 	$(shell find . -name '*.c')
@@ -10,21 +9,15 @@ FILES = $(shell find . -name '*.c' -name '*.h')
 OBJ = $(SRCS:.c=.o)
 CC	=	gcc
 
-$(NAME): $(OBJ) $(LIBFT)
+$(NAME): $(OBJ)
 	@echo "[Removing last version...]"
-	@rm -rf push_swap
-	@echo "[push_swap compilation...]"
-	@$(MAKE) bonus -C ./libft
-	@$(CC) $(SRCS) $(LIBFT) -o $(NAME) -g
+	@rm -rf philosophers
+	@echo "[philosophers compilation...]"
+	@$(MAKE) bonus -C
+	@$(CC) $(SRCS) -o $(NAME) -g -pthread
 	@echo "[Done!]"
 	@$(MAKE) clean
 #-fsanitize=address
-
-$(LIBFT):
-	@echo "[compiling libft...]"
-	@$(MAKE) bonus -C ./libft
-	@$(MAKE) clean -C ./libft
-	@mv libft/libft.a .
 
 all : $(NAME)
 
@@ -32,16 +25,16 @@ norme:
 	@norminette $(FILES)
 
 leaks: $(MAKE) all
-	@leaks --atExit -- ./$(NAME) $(VET)
+	@leaks --atExit -- ./$(NAME) $(PAR)
 
 run: $(MAKE) re
-	@./$(NAME) $(VET)
+	@./$(NAME) $(PAR)
 clean:
 	@rm -rf $(OBJ)
-	@$(MAKE) clean -C ./libft
+	@$(MAKE) clean -C
 
 fclean: clean
-	@rm -rf $(NAME) $(LIBFT)
-	@$(MAKE) fclean -C ./libft
+	@rm -rf $(NAME)
+	@$(MAKE) fclean -C
 
 re : fclean all

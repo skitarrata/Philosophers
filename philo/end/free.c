@@ -1,18 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: svalenti <svalenti@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/06/17 16:54:08 by svalenti          #+#    #+#             */
-/*   Updated: 2021/06/17 16:54:15 by svalenti         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../header/philosophers.h"
 
-void	ft_free_philo(t_philo *philo)
+void	ft_free_philo(t_time *time, t_philo *philo)
 {
-
+	if (time)
+		free(time);
+	if (philo)
+		free(philo);
 }
