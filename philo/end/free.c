@@ -1,10 +1,10 @@
 
 #include "../header/philosophers.h"
 
-void	ft_free_philo(t_time *time, t_philo *philo)
+void	ft_free_philo(t_arg *arg)
 {
-	if (time)
-		free(time);
-	if (philo)
-		free(philo);
+	if (arg->philos)
+		free(arg->philos);
+	if (arg)
+		free(arg);
 }

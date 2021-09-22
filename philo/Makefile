@@ -1,5 +1,5 @@
 NAME = philosophers
-PAR =  5 2 4
+PAR =  5 2 4 6
 
 #FLAGS = -Wall -Werror -Wextra
 
@@ -13,7 +13,7 @@ $(NAME): $(OBJ)
 	@echo "[Removing last version...]"
 	@rm -rf philosophers
 	@echo "[philosophers compilation...]"
-	@$(MAKE) bonus -C
+#@$(MAKE) bonus -C
 	@$(CC) $(SRCS) -o $(NAME) -g -pthread
 	@echo "[Done!]"
 	@$(MAKE) clean

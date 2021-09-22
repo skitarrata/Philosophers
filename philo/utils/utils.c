@@ -40,6 +40,16 @@ int	ft_atoi(const char *str)
 	return (s == 1 ? -1 : 0);
 }
 
+static void	ft_bzero(void *s, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n)
+		((unsigned char *)s)[i++] = 0;
+	return ;
+}
+
 void	*ft_calloc(size_t count, size_t size)
 {
 	void *res;

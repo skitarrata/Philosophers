@@ -1,9 +1,9 @@
 
 #include "../header/philosophers.h"
 
-void	ft_error(t_time *time, t_philo *philo, char *text)
+void	ft_error(t_arg *arg, char *text)
 {
 	printf("%s", text);
-	ft_free_philo(time, philo);
+	ft_free_philo(arg);
 	exit(0);
 }
