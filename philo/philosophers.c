@@ -15,6 +15,7 @@ static void ft_init_philo(t_arg *arg)
 		arg->philos[i].fork = i;
 		arg->philos[i].state = THINK;
 		arg->philos[i].time = arg->t_die * 1000;
+		pthread_create(&(arg->philos[i].t), NULL, nomefunc, NULL);
 		pthread_mutex_init(&arg->philos[i].mut, NULL);
 	}
 }
@@ -43,7 +44,7 @@ static void	ft_parse(char *str, t_arg *arg)
 			ft_error(arg, BAD_PAR);
 }
 
-int	main(int argc, char *argv)
+int	main(int argc, char *argv[])
 {
 	int		i;
 	t_arg	*arg;
@@ -55,11 +56,12 @@ int	main(int argc, char *argv)
 	if (argc >= 5 && argc <= 6)
 		while (++i < argc)
 		{
-			ft_parse(&argv[i], arg);
-			ft_init(i, &argv[i], arg);
+			ft_parse(argv[i], arg);
+			ft_init(i, argv[i], arg);
 			ft_init_philo(arg);
 		}
 	else
 		ft_error(arg, PAR);
+	//printf("%d\n", arg->philos[1].state);
 	ft_error(arg, END);
 }

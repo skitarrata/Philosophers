@@ -18,6 +18,7 @@ typedef struct		s_philo
 	int				fork;
 	int				state;
 	long int		time;
+	pthread_t		t;
 	pthread_mutex_t	mut;
 }					t_philo;
 

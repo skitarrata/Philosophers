@@ -13,8 +13,7 @@ $(NAME): $(OBJ)
 	@echo "[Removing last version...]"
 	@rm -rf philosophers
 	@echo "[philosophers compilation...]"
-#@$(MAKE) bonus -C
-	@$(CC) $(SRCS) -o $(NAME) -g -pthread
+	@$(CC) $(SRCS) -o $(NAME) -lpthread
 	@echo "[Done!]"
 	@$(MAKE) clean
 #-fsanitize=address
@@ -27,14 +26,10 @@ norme:
 leaks: $(MAKE) all
 	@leaks --atExit -- ./$(NAME) $(PAR)
 
-run: $(MAKE) re
-	@./$(NAME) $(PAR)
 clean:
 	@rm -rf $(OBJ)
-	@$(MAKE) clean -C
 
 fclean: clean
 	@rm -rf $(NAME)
-	@$(MAKE) fclean -C
 
 re : fclean all
