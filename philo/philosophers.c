@@ -12,11 +12,10 @@ static void ft_init_philo(t_arg *arg)
 	while (++i < arg->n_philo)
 	{
 		arg->philos[i].pos = i;
-		arg->philos[i].fork = i;
 		arg->philos[i].state = THINK;
-		arg->philos[i].time = arg->t_die * 1000;
-		pthread_create(&(arg->philos[i].t), NULL, nomefunc, NULL);
-		pthread_mutex_init(&arg->philos[i].mut, NULL);
+		arg->philos[i].time = arg->t_die;
+		//pthread_create(&(arg->philos[i].t), NULL, nomefunc, NULL);
+		pthread_mutex_init(&arg->philos[i].fork, NULL);
 	}
 }
 
@@ -32,6 +31,8 @@ static void	ft_init(int i, char *str, t_arg *arg)
 			arg->t_sleep = ft_atoi(str);
 	if (i == 5)
 			arg->n_eat = ft_atoi(str);
+	if (arg->n_philo < 2)
+		ft_error(arg, PHILOERR);
 }
 
 static void	ft_parse(char *str, t_arg *arg)

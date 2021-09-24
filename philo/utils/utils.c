@@ -59,3 +59,13 @@ void	*ft_calloc(size_t count, size_t size)
 	ft_bzero(res, count * size);
 	return (res);
 }
+
+/* void	ft_putnbr(long int nb)
+{
+	char	s;
+
+	if (nb > 9)
+		ft_putnbr(nb / 10);
+	s = (char)(nb % 10 + 48);
+	printf("%c", s);
+} */
