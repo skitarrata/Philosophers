@@ -1,10 +1,8 @@
 
 #include "../header/philosophers.h"
 
-void	ft_free_philo(t_arg *arg)
+void	ft_free_philo(t_philo *philo)
 {
-	if (arg->philos)
-		free(arg->philos);
-	if (arg)
-		free(arg);
+	if (philo)
+		free(philo);
 }

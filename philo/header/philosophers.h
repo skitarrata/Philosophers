@@ -22,29 +22,27 @@ typedef struct		s_philo
 {
 	int				pos;
 	int				state;
-	long int		time;
+	int				cnt;
+	//long int		time;
+	long int		start;
 	pthread_t		t;
 	pthread_mutex_t	fork;
-}					t_philo;
-
-typedef struct		s_arg
-{
 	long int		t_die;
 	long int		t_eat;
 	long int		t_sleep;
-	t_philo			*philos;
 	int				n_philo;
 	int				n_eat;
-}					t_arg;
+}					t_philo;
 
 int			ft_strlen(const char *str);
 int			ft_atoi(const char *str);
 void		*ft_calloc(size_t count, size_t size);
-void		ft_error(t_arg *arg, char *text);
-void		ft_free_philo(t_arg *arg);
+void		ft_free_philo(t_philo *philo);
+void		ft_error(t_philo *philo, char *text);
 long int	ft_time(void);
 void		ft_usleep(int length);
 void		ft_print(long int time, int phil, char *str);
+void		*ft_state(void *arg);
 //void		ft_putnbr(long int nb);
 
 #endif
