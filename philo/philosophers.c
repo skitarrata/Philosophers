@@ -1,31 +1,6 @@
 
 #include "header/philosophers.h"
 
-void	*ft_state(void *arg)
-{
-	t_philo	*p;
-
-	p = (t_philo *) arg;
-	while (p->n_eat >= p->cnt || !p->n_eat)
-	{
-		ft_print(p->start, p->pos, "has taken a fork");
-		ft_print(p->start, p->pos, "has taken a fork");
-		ft_print(p->start, p->pos, "is eating");
-		ft_usleep(p->t_eat);
-		p->cnt++;
-		ft_print(p->start, p->pos, "is sleeping");
-		ft_usleep(p->t_sleep);
-		ft_print(p->start, p->pos, "is thinking");
-	}
-}
-
-/* static void ft_init_philo(t_arg *arg)
-{
-	i = -1;
-	while (++i < arg->n_philo)
-		pthread_join(arg->[i].t, NULL);
-} */
-
 static void	ft_init(int i, int argc, char *str[], t_philo *philo)
 {
 	philo[i].n_philo = ft_atoi(str[1]);;
@@ -35,11 +10,12 @@ static void	ft_init(int i, int argc, char *str[], t_philo *philo)
 	if (argc == 6)
 		philo[i].n_eat = ft_atoi(str[5]);
 	philo[i].pos = i + 1;
-	philo[i].state = THINK;
-	//philo[i].time = ft_atoi(str[2]);
 	philo[i].start = ft_time();
-	pthread_create(&philo[i].t, NULL, ft_state, philo);
 	pthread_mutex_init(&philo[i].fork, NULL);
+	if (i)
+		philo[i].prev = &philo[i - 1].fork;
+	else
+		philo[i].prev = NULL;
 }
 
 static void	ft_parse(char *str, t_philo *philo)
@@ -50,6 +26,65 @@ static void	ft_parse(char *str, t_philo *philo)
 	while (str[++i])
 		if (str[i] < '0' || str[i] > '9')
 			ft_error(philo, BAD_PAR);
+}
+
+void	*ft_state(void *arg)
+{
+	t_philo		*p;
+	pthread_t	t;
+
+	p = (t_philo *) arg;
+	pthread_create(&t, NULL, ft_death_loop, p);
+	if (p->pos % 2 == 0)
+		ft_usleep((float)p->t_eat * 0.9 + 1);
+	while (p->n_eat >= p->cnt || !p->n_eat)
+	{
+		pthread_mutex_lock(&p->fork);
+		ft_print(p->start, p->pos, "has taken a fork");
+		pthread_mutex_lock(p->prev);
+		ft_print(p->start, p->pos, "has taken a fork");
+		p->l_meal = ft_time();
+		ft_print(p->start, p->pos, "is eating");
+		ft_usleep(p->t_eat);
+		pthread_mutex_unlock(&p->fork);
+		pthread_mutex_unlock(p->prev);
+		p->cnt++;
+		ft_print(p->start, p->pos, "is sleeping");
+		ft_usleep(p->t_sleep);
+		ft_print(p->start, p->pos, "is thinking");
+	}
+}
+
+static void	ft_philo(t_philo *p)
+{
+	int				i;
+	pthread_t		t;
+	pthread_mutex_t	state;
+	pthread_mutex_t meal;
+
+	i = -1;
+	pthread_mutex_init(&state, NULL);
+	pthread_mutex_init(&meal, NULL);
+	pthread_mutex_lock(&state);
+	p[0].prev = &p[p[0].n_philo - 1].fork;
+	while (++i < p[0].n_philo)
+	{
+		p[i].state = &state;
+		p[i].meal = &meal;
+		pthread_create(&t, NULL, ft_state, &p[i]);
+		//pthread_mutex_destroy(&p[i].fork);
+	}
+	if (p[0].n_eat > 0)
+		pthread_create(&t, NULL, ft_meal_loop, &p[0]);
+	pthread_mutex_lock(&state);
+	i = -1;
+	while (++i < p[0].n_philo)
+		pthread_mutex_destroy(&p[i].fork);
+	pthread_mutex_destroy(&state);
+	pthread_mutex_destroy(&meal);
+/* 	i = -1;
+	while (++i < p[0].n_philo)
+		pthread_mutex_destroy(&p[i].fork); */
 }
 
 int	main(int argc, char *argv[])
@@ -73,8 +108,9 @@ int	main(int argc, char *argv[])
 	while (++i < len)
 	{
 		ft_init(i, argc, argv, philo);
-		pthread_join(philo[i].t, NULL);
+		//pthread_join(philo[i].t, NULL);
 	}
+	ft_philo(philo);
 	//printf("%d\n", philo[2].n_eat);
 	ft_error(philo, END);
 }
