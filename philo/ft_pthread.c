@@ -13,7 +13,7 @@ void	*ft_death_loop(void *arg)
 			pthread_mutex_unlock(p->state);
 			return (NULL);
 		}
-		else if (p->n_eat != 0 && p->cnt >= p->n_eat)
+		else if (p->n_eat != -1 && p->cnt >= p->n_eat)
 		{
 			ft_usleep((float)p->pos);
 			pthread_mutex_unlock(p->meal);

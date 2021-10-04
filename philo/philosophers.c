@@ -1,21 +1,24 @@
 
 #include "header/philosophers.h"
 
-static void	ft_init(int i, int argc, char *str[], t_philo *philo)
+static void	ft_init(int i, int argc, char *str[], t_philo *p)
 {
-	philo[i].n_philo = ft_atoi(str[1]);;
-	philo[i].t_die = ft_atoi(str[2]);
-	philo[i].t_eat = ft_atoi(str[3]);
-	philo[i].t_sleep = ft_atoi(str[4]);
+	p[i].n_philo = ft_atoi(str[1]);;
+	p[i].t_die = ft_atoi(str[2]);
+	p[i].t_eat = ft_atoi(str[3]);
+	p[i].t_sleep = ft_atoi(str[4]);
 	if (argc == 6)
-		philo[i].n_eat = ft_atoi(str[5]);
-	philo[i].pos = i + 1;
-	philo[i].start = ft_time();
-	pthread_mutex_init(&philo[i].fork, NULL);
-	if (i)
-		philo[i].prev = &philo[i - 1].fork;
+		p[i].n_eat = ft_atoi(str[5]);
 	else
-		philo[i].prev = NULL;
+		p[i].n_eat = -1;
+	p[i].pos = i + 1;
+	p[i].start = ft_time();
+	p[i].l_meal = p[i].start;
+	pthread_mutex_init(&p[i].fork, NULL);
+	if (i)
+		p[i].prev = &p[i - 1].fork;
+	else
+		p[i].prev = NULL;
 }
 
 static void	ft_parse(char *str, t_philo *philo)
@@ -37,7 +40,7 @@ void	*ft_state(void *arg)
 	pthread_create(&t, NULL, ft_death_loop, p);
 	if (p->pos % 2 == 0)
 		ft_usleep((float)p->t_eat * 0.9 + 1);
-	while (p->n_eat >= p->cnt || !p->n_eat)
+	while (p->n_eat > p->cnt || p->n_eat == -1)
 	{
 		pthread_mutex_lock(&p->fork);
 		ft_print(p->start, p->pos, "has taken a fork");
@@ -74,7 +77,7 @@ static void	ft_philo(t_philo *p)
 		pthread_create(&t, NULL, ft_state, &p[i]);
 		//pthread_mutex_destroy(&p[i].fork);
 	}
-	if (p[0].n_eat > 0)
+	if (p[0].n_eat > -1)
 		pthread_create(&t, NULL, ft_meal_loop, &p[0]);
 	pthread_mutex_lock(&state);
 	i = -1;
@@ -82,9 +85,6 @@ static void	ft_philo(t_philo *p)
 		pthread_mutex_destroy(&p[i].fork);
 	pthread_mutex_destroy(&state);
 	pthread_mutex_destroy(&meal);
-/* 	i = -1;
-	while (++i < p[0].n_philo)
-		pthread_mutex_destroy(&p[i].fork); */
 }
 
 int	main(int argc, char *argv[])
@@ -106,11 +106,7 @@ int	main(int argc, char *argv[])
 		ft_error(philo, MALLOC_FAIL);
 	i = -1;
 	while (++i < len)
-	{
 		ft_init(i, argc, argv, philo);
-		//pthread_join(philo[i].t, NULL);
-	}
 	ft_philo(philo);
-	//printf("%d\n", philo[2].n_eat);
 	ft_error(philo, END);
 }
