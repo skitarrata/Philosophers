@@ -9,7 +9,7 @@ void	*ft_death_loop(void *arg)
 	{
 		if (ft_time() - p->l_meal > p->t_die)
 		{
-			ft_print(p->start, p->pos, "has died");
+			ft_print(p->start, p->pos, "is dead");
 			pthread_mutex_unlock(p->state);
 			return (NULL);
 		}
