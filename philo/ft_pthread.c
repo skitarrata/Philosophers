@@ -20,6 +20,7 @@ void	*ft_death_loop(void *arg)
 			return (NULL);
 		}
 	}
+	return (NULL);
 }
 
 void	*ft_meal_loop(void *arg)
@@ -35,4 +36,5 @@ void	*ft_meal_loop(void *arg)
 		pthread_mutex_lock(p->meal);
 	ft_print(p->start, 0, "Everyone has eaten enough !");
 	pthread_mutex_unlock(p->state);
+	return (NULL);
 }

@@ -56,6 +56,7 @@ void	*ft_state(void *arg)
 		ft_usleep(p->t_sleep);
 		ft_print(p->start, p->pos, "is thinking");
 	}
+	return (NULL);
 }
 
 static void	ft_philo(t_philo *p)
