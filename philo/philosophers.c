@@ -56,6 +56,7 @@ void	*ft_state(void *arg)
 		ft_usleep(p->t_sleep);
 		ft_print(p->start, p->pos, "is thinking");
 	}
+	//pthread_join(t, NULL);
 	return (NULL);
 }
 
@@ -78,8 +79,11 @@ static void	ft_philo(t_philo *p)
 		pthread_create(&t, NULL, ft_state, &p[i]);
 		//pthread_mutex_destroy(&p[i].fork);
 	}
+	i = -1;
 	if (p[0].n_eat > -1)
 		pthread_create(&t, NULL, ft_meal_loop, &p[0]);
+	while (++i < p[0].n_philo && !p->state)
+		pthread_join(t, NULL);
 	pthread_mutex_lock(&state);
 	i = -1;
 	while (++i < p[0].n_philo)
@@ -100,7 +104,7 @@ int	main(int argc, char *argv[])
 	while (++i < argc)
 		ft_parse(argv[i], philo);
 	len = ft_atoi(argv[1]);
-	if (len < 2)
+	if (len > 200)
 		ft_error(philo, PHILOERR);
 	philo = (t_philo *)ft_calloc(len, sizeof(t_philo));
 	if (!philo)

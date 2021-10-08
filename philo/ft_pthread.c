@@ -2,8 +2,10 @@
 
 void	*ft_death_loop(void *arg)
 {
+	int i;
 	t_philo	*p;
 
+	i = -1;
 	p = (t_philo *) arg;
 	while (1)
 	{
@@ -34,7 +36,7 @@ void	*ft_meal_loop(void *arg)
 		pthread_mutex_lock(p->meal);
 	while (p->n_eat != 0 && ++i < p->n_philo)
 		pthread_mutex_lock(p->meal);
-	ft_print(p->start, 0, "Everyone has eaten enough !");
+	printf("Everyone has eaten enough !\n");
 	pthread_mutex_unlock(p->state);
 	return (NULL);
 }

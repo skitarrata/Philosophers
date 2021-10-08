@@ -17,10 +17,8 @@
 typedef struct		s_philo
 {
 	int				pos;
-	//int			state;
 	int				cnt;
 	long int		start;
-	//pthread_t		t;
 	pthread_mutex_t	fork;
 	pthread_mutex_t	*prev;
 	pthread_mutex_t	*state;
@@ -41,9 +39,7 @@ void		ft_error(t_philo *philo, char *text);
 long int	ft_time(void);
 void		ft_usleep(int length);
 void		ft_print(long int time, int phil, char *str);
-void		*ft_state(void *arg);
 void		*ft_death_loop(void *arg);
 void		*ft_meal_loop(void *arg);
-//void		ft_putnbr(long int nb);
 
 #endif
