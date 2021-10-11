@@ -36,8 +36,8 @@ void	*ft_state(void *arg)
 	t_philo		*p;
 	pthread_t	t;
 
-	p = (t_philo *) arg;
-	pthread_create(&t, NULL, ft_death_loop, p);
+	p = (t_philo *)arg;
+	//pthread_create(&t, NULL, ft_death_loop, p);
 	if (p->pos % 2 == 0)
 		ft_usleep((float)p->t_eat * 0.9 + 1);
 	while (p->n_eat > p->cnt || p->n_eat == -1)
@@ -55,6 +55,7 @@ void	*ft_state(void *arg)
 		ft_print(p->start, p->pos, "is sleeping");
 		ft_usleep(p->t_sleep);
 		ft_print(p->start, p->pos, "is thinking");
+		ft_death_loop(p);
 	}
 	//pthread_join(t, NULL);
 	return (NULL);
@@ -95,7 +96,7 @@ static void	ft_philo(t_philo *p)
 int	main(int argc, char *argv[])
 {
 	int		i;
-	int		len;
+	int		n_philo;
 	t_philo	*philo;
 
 	i = 0;
@@ -103,14 +104,14 @@ int	main(int argc, char *argv[])
 		ft_error(philo, PAR);
 	while (++i < argc)
 		ft_parse(argv[i], philo);
-	len = ft_atoi(argv[1]);
-	if (len > 200)
+	n_philo = ft_atoi(argv[1]);
+	if (n_philo > 200)
 		ft_error(philo, PHILOERR);
-	philo = (t_philo *)ft_calloc(len, sizeof(t_philo));
+	philo = (t_philo *)ft_calloc(n_philo, sizeof(t_philo));
 	if (!philo)
 		ft_error(philo, MALLOC_FAIL);
 	i = -1;
-	while (++i < len)
+	while (++i < n_philo)
 		ft_init(i, argc, argv, philo);
 	ft_philo(philo);
 	ft_error(philo, END);

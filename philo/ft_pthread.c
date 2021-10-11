@@ -1,28 +1,26 @@
 #include "header/philosophers.h"
 
-void	*ft_death_loop(void *arg)
+void	ft_death_loop(t_philo	*p)
 {
 	int i;
-	t_philo	*p;
 
 	i = -1;
-	p = (t_philo *) arg;
 	while (1)
 	{
 		if (ft_time() - p->l_meal > p->t_die)
 		{
 			ft_print(p->start, p->pos, "is dead");
 			pthread_mutex_unlock(p->state);
-			return (NULL);
+			return ;
 		}
 		else if (p->n_eat != -1 && p->cnt >= p->n_eat)
 		{
 			ft_usleep((float)p->pos);
 			pthread_mutex_unlock(p->meal);
-			return (NULL);
+			return ;
 		}
 	}
-	return (NULL);
+	//return (NULL);
 }
 
 void	*ft_meal_loop(void *arg)
