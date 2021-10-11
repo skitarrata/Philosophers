@@ -39,7 +39,7 @@ void		ft_error(t_philo *philo, char *text);
 long int	ft_time(void);
 void		ft_usleep(int length);
 void		ft_print(long int time, int phil, char *str);
-void		ft_death_loop(t_philo	*p);
+void		*ft_death_loop(void *arg);
 void		*ft_meal_loop(void *arg);
 
 #endif
