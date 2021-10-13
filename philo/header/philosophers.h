@@ -18,24 +18,34 @@ typedef struct		s_philo
 {
 	int				pos;
 	int				cnt;
-	long int		start;
-	pthread_mutex_t	fork;
-	pthread_mutex_t	*prev;
+	int				fork_left;
+	int				fork_right;
 	pthread_mutex_t	*state;
 	pthread_mutex_t	*meal;
+	long int		l_meal;
+	pthread_t		t_id;
+	struct s_rules	*rules;
+}					t_philo;
+
+typedef struct		s_rules
+{
+	int				n_philo;
 	long int		t_die;
 	long int		t_eat;
 	long int		t_sleep;
-	long int		l_meal;
-	int				n_philo;
 	int				n_eat;
-}					t_philo;
+	long int		start;
+	int				dieded;
+	pthread_mutex_t	forks[250];
+	t_philo			philo[250];
+}					t_rules;
+
 
 int			ft_strlen(const char *str);
 int			ft_atoi(const char *str);
 void		*ft_calloc(size_t count, size_t size);
 void		ft_free_philo(t_philo *philo);
-void		ft_error(t_philo *philo, char *text);
+void		ft_error(char *text);
 long int	ft_time(void);
 void		ft_usleep(int length);
 void		ft_print(long int time, int phil, char *str);

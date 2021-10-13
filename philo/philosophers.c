@@ -1,117 +1,108 @@
 
 #include "header/philosophers.h"
 
-static void	ft_init(int i, int argc, char *str[], t_philo *p)
-{
-	p[i].n_philo = ft_atoi(str[1]);;
-	p[i].t_die = ft_atoi(str[2]);
-	p[i].t_eat = ft_atoi(str[3]);
-	p[i].t_sleep = ft_atoi(str[4]);
-	if (argc == 6)
-		p[i].n_eat = ft_atoi(str[5]);
-	else
-		p[i].n_eat = -1;
-	p[i].pos = i + 1;
-	p[i].start = ft_time();
-	p[i].l_meal = p[i].start;
-	pthread_mutex_init(&p[i].fork, NULL);
-	if (i)
-		p[i].prev = &p[i - 1].fork;
-	else
-		p[i].prev = NULL;
-}
-
-static void	ft_parse(char *str, t_philo *philo)
+static void	ft_parse(char *str)
 {
 	int i;
 
 	i = -1;
 	while (str[++i])
 		if (str[i] < '0' || str[i] > '9')
-			ft_error(philo, BAD_PAR);
+			ft_error(BAD_PAR);
 }
 
-void	*ft_state(void *arg)
+void		ft_init_philo(t_rules *rules)
 {
-	t_philo		*p;
-	pthread_t	t;
+	int i;
 
-	p = (t_philo *) arg;
-	pthread_create(&t, NULL, ft_death_loop, p);
-	if (p->pos % 2 == 0)
-		ft_usleep((float)p->t_eat * 0.9 + 1);
-	while (p->n_eat > p->cnt || p->n_eat == -1)
+	i = -1;
+	while (++i < rules->n_philo)
 	{
-		pthread_mutex_lock(&p->fork);
-		ft_print(p->start, p->pos, "has taken a fork");
-		pthread_mutex_lock(p->prev);
-		ft_print(p->start, p->pos, "has taken a fork");
-		p->l_meal = ft_time();
-		ft_print(p->start, p->pos, "is eating");
-		ft_usleep(p->t_eat);
-		pthread_mutex_unlock(&p->fork);
-		pthread_mutex_unlock(p->prev);
-		p->cnt++;
-		ft_print(p->start, p->pos, "is sleeping");
-		ft_usleep(p->t_sleep);
-		ft_print(p->start, p->pos, "is thinking");
+		rules->philo[i].pos = i + 1;
+		rules->philo[i].fork_left = i;
+		rules->philo[i].fork_right = (i + 1) % rules->n_philo;
+		rules->philo[i].rules = rules;
 	}
-	//pthread_join(t, NULL);
+}
+
+void		ft_init_mutex(t_rules *rules)
+{
+	int i;
+
+	i = -1;
+	while (++i < rules->n_philo)
+		pthread_mutex_init(&rules->forks[i], NULL);
+}
+
+static void	ft_init(t_rules *rules, int argc, char *argv[])
+{
+	rules->n_philo = ft_atoi(argv[1]);
+	rules->t_die = ft_atoi(argv[2]);
+	rules->t_eat = ft_atoi(argv[3]);
+	rules->t_sleep = ft_atoi(argv[4]);
+	if (argc == 6)
+		rules->n_eat = ft_atoi(argv[5]);
+	else
+		rules->n_eat = -1;
+	ft_init_philo(rules);
+	ft_init_mutex(rules);
+}
+
+void	*ft_thread (void *arg)
+{
+	t_philo *phi;
+	t_rules *rules;
+
+	phi = (t_philo *)arg;
+	rules = phi->rules;
+	if (phi->pos % 2 == 0)
+		usleep(15000);
+	while (!rules->dieded)
+	{
+		pthread_mutex_lock(&rules->forks[phi->fork_left]);
+		ft_print(rules->start, phi->pos, TAKE);
+		pthread_mutex_lock(&rules->forks[phi->fork_right]);
+		ft_print(rules->start, phi->pos, TAKE);
+		ft_print(rules->start, phi->pos, EATING);
+		ft_usleep(rules->t_eat);
+		pthread_mutex_unlock(&rules->forks[phi->fork_left]);
+		pthread_mutex_unlock(&rules->forks[phi->fork_right]);
+		ft_print(rules->start, phi->pos, SLEEPING);
+		ft_usleep(rules->t_sleep);
+		ft_print(rules->start, phi->pos, THINKING);
+	}
 	return (NULL);
 }
 
-static void	ft_philo(t_philo *p)
+void	ft_philo (t_rules *rules)
 {
-	int				i;
-	pthread_t		t;
-	pthread_mutex_t	state;
-	pthread_mutex_t meal;
+	int i;
+	t_philo *phi;
+	int err;
 
+	phi = rules->philo;
 	i = -1;
-	pthread_mutex_init(&state, NULL);
-	pthread_mutex_init(&meal, NULL);
-	pthread_mutex_lock(&state);
-	p[0].prev = &p[p[0].n_philo - 1].fork;
-	while (++i < p[0].n_philo)
+	rules->start = ft_time();
+	while (++i < rules->n_philo)
 	{
-		p[i].state = &state;
-		p[i].meal = &meal;
-		pthread_create(&t, NULL, ft_state, &p[i]);
-		//pthread_mutex_destroy(&p[i].fork);
+		err = pthread_create(&phi[i].t_id, NULL, ft_thread, &phi[i]);
+		if (err != 0)
+			ft_error(THREAD_FAIL);
 	}
-	i = -1;
-	if (p[0].n_eat > -1)
-		pthread_create(&t, NULL, ft_meal_loop, &p[0]);
-	while (++i < p[0].n_philo && !p->state)
-		pthread_join(t, NULL);
-	pthread_mutex_lock(&state);
-	i = -1;
-	while (++i < p[0].n_philo)
-		pthread_mutex_destroy(&p[i].fork);
-	pthread_mutex_destroy(&state);
-	pthread_mutex_destroy(&meal);
 }
 
 int	main(int argc, char *argv[])
 {
 	int		i;
 	int		len;
-	t_philo	*philo;
+	t_rules	rules;
 
 	i = 0;
 	if (argc < 5 || argc > 6)
-		ft_error(philo, PAR);
+		ft_error(PAR);
 	while (++i < argc)
-		ft_parse(argv[i], philo);
-	len = ft_atoi(argv[1]);
-	if (len > 200)
-		ft_error(philo, PHILOERR);
-	philo = (t_philo *)ft_calloc(len, sizeof(t_philo));
-	if (!philo)
-		ft_error(philo, MALLOC_FAIL);
-	i = -1;
-	while (++i < len)
-		ft_init(i, argc, argv, philo);
-	ft_philo(philo);
-	ft_error(philo, END);
+		ft_parse(argv[i]);
+	ft_init(&rules, argc, argv);
+	ft_philo(&rules);
+	ft_error(END);
 }
