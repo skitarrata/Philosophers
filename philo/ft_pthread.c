@@ -5,11 +5,12 @@ void	ft_exit(t_rules *rules, t_philo *phi)
 	int i;
 
 	i = -1;
-	while (++i < rules->n_philo)
+	while (++i < rules->n_philo && phi[i].pos != 1)
 		pthread_join(phi[i].t_id, NULL);
 	i = -1;
 	while (++i < rules->n_philo)
 		pthread_mutex_destroy(&(rules->forks[i]));
+	pthread_mutex_destroy(&(rules->meal));
 }
 
 void ft_one_philo(t_philo *phi, t_rules *rules)
@@ -48,7 +49,7 @@ void	*ft_thread (void *arg)
 	{
 		ft_meal(phi, rules);
 		if (rules->all_ate)
-			break ;
+			return (NULL);
 		ft_print(rules, phi->pos, SLEEPING);
 		ft_usleep(rules->t_sleep);
 		ft_print(rules, phi->pos, THINKING);
@@ -83,21 +84,6 @@ void ft_death_loop(t_rules *rules, t_philo *phi)
 	}
 }
 
-void	*ft_thread_one_philo (void *arg)
-{
-	t_philo *phi;
-	t_rules *rules;
-
-	phi = (t_philo *)arg;
-	rules = phi->rules;
-	while (phi->cnt > rules->n_eat || !rules->dieded)
-	{
-		pthread_mutex_lock(&rules->forks[phi->fork_left]);
-		ft_print(rules, phi->pos, TAKE);
-	}
-	return (NULL);
-}
-
 void	ft_philo (t_rules *rules)
 {
 	int i;
@@ -105,14 +91,11 @@ void	ft_philo (t_rules *rules)
 	int err;
 
 	phi = rules->philo;
-	i = -1;
 	rules->start = ft_time();
+	i = -1;
 	while (++i < rules->n_philo)
 	{
-		if (rules->n_philo == 1)
-			err = pthread_create(&phi[i].t_id, NULL, ft_thread_one_philo, &phi[i]);
-		else
-			err = pthread_create(&phi[i].t_id, NULL, ft_thread, &phi[i]);
+		err = pthread_create(&phi[i].t_id, NULL, ft_thread, &phi[i]);
 		if (err != 0)
 			ft_error(THREAD_FAIL);
 		phi[i].l_meal = ft_time();

@@ -23,7 +23,6 @@ typedef struct		s_philo
 	int				cnt;
 	int				fork_left;
 	int				fork_right;
-	pthread_mutex_t	*state;
 	long int		l_meal;
 	pthread_t		t_id;
 	struct s_rules	*rules;

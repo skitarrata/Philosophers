@@ -1,6 +1,6 @@
 NAME =	philosophers
 
-PAR =	5 800 200 200
+PAR =	1 800 200 200
 FLAGS =	-Wall -Werror -Wextra
 
 SRCS =	$(shell find . -name '*.c')
