@@ -1,12 +1,12 @@
-NAME = philosophers
-PAR =  5 2 4 6
+NAME =	philosophers
 
-#FLAGS = -Wall -Werror -Wextra
+PAR =	5 800 200 200
+FLAGS =	-Wall -Werror -Wextra
 
-SRCS = 	$(shell find . -name '*.c')
-FILES = $(shell find . -name '*.c' -name '*.h')
+SRCS =	$(shell find . -name '*.c')
+FILES =	$(shell find . -name '*.c' -name '*.h')
 
-OBJ = $(SRCS:.c=.o)
+OBJ =	$(SRCS:.c=.o)
 CC	=	gcc
 
 $(NAME): $(OBJ)
@@ -16,7 +16,6 @@ $(NAME): $(OBJ)
 	@$(CC) $(SRCS) -o $(NAME) -lpthread
 	@echo "[Done!]"
 	@$(MAKE) clean
-#-fsanitize=address
 
 all : $(NAME)
 

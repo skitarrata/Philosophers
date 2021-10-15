@@ -39,33 +39,3 @@ int	ft_atoi(const char *str)
 		return (res * s);
 	return (s == 1 ? -1 : 0);
 }
-
-static void	ft_bzero(void *s, size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < n)
-		((unsigned char *)s)[i++] = 0;
-	return ;
-}
-
-void	*ft_calloc(size_t count, size_t size)
-{
-	void *res;
-
-	if (!(res = malloc(count * size)))
-		return (0);
-	ft_bzero(res, count * size);
-	return (res);
-}
-
-/* void	ft_putnbr(long int nb)
-{
-	char	s;
-
-	if (nb > 9)
-		ft_putnbr(nb / 10);
-	s = (char)(nb % 10 + 48);
-	printf("%c", s);
-} */

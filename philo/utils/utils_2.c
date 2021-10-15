@@ -17,10 +17,11 @@ void	ft_usleep(int length)
 		usleep(length);
 }
 
-void	ft_print(long int time, int phil, char *str)
+void	ft_print(t_rules *rules, int phil, char *str)
 {
 	long int nb;
 
-	nb = ft_time() - time;
-	printf("%ld           philosopher %d: %s\n", nb, phil, str);
+	nb = ft_time() - rules->start;
+	if (!rules->dieded)
+		printf("%ld           philosopher %d: %s\n", nb, phil, str);
 }

@@ -1,4 +1,3 @@
-
 #include "header/philosophers.h"
 
 static void	ft_parse(char *str)
@@ -22,6 +21,7 @@ void		ft_init_philo(t_rules *rules)
 		rules->philo[i].fork_left = i;
 		rules->philo[i].fork_right = (i + 1) % rules->n_philo;
 		rules->philo[i].rules = rules;
+		rules->philo[i].cnt = 0;
 	}
 }
 
@@ -44,57 +44,15 @@ static void	ft_init(t_rules *rules, int argc, char *argv[])
 		rules->n_eat = ft_atoi(argv[5]);
 	else
 		rules->n_eat = -1;
+	rules->dieded = 0;
+	rules->all_ate = 0;
 	ft_init_philo(rules);
 	ft_init_mutex(rules);
-}
-
-void	*ft_thread (void *arg)
-{
-	t_philo *phi;
-	t_rules *rules;
-
-	phi = (t_philo *)arg;
-	rules = phi->rules;
-	if (phi->pos % 2 == 0)
-		usleep(15000);
-	while (!rules->dieded)
-	{
-		pthread_mutex_lock(&rules->forks[phi->fork_left]);
-		ft_print(rules->start, phi->pos, TAKE);
-		pthread_mutex_lock(&rules->forks[phi->fork_right]);
-		ft_print(rules->start, phi->pos, TAKE);
-		ft_print(rules->start, phi->pos, EATING);
-		ft_usleep(rules->t_eat);
-		pthread_mutex_unlock(&rules->forks[phi->fork_left]);
-		pthread_mutex_unlock(&rules->forks[phi->fork_right]);
-		ft_print(rules->start, phi->pos, SLEEPING);
-		ft_usleep(rules->t_sleep);
-		ft_print(rules->start, phi->pos, THINKING);
-	}
-	return (NULL);
-}
-
-void	ft_philo (t_rules *rules)
-{
-	int i;
-	t_philo *phi;
-	int err;
-
-	phi = rules->philo;
-	i = -1;
-	rules->start = ft_time();
-	while (++i < rules->n_philo)
-	{
-		err = pthread_create(&phi[i].t_id, NULL, ft_thread, &phi[i]);
-		if (err != 0)
-			ft_error(THREAD_FAIL);
-	}
 }
 
 int	main(int argc, char *argv[])
 {
 	int		i;
-	int		len;
 	t_rules	rules;
 
 	i = 0;
