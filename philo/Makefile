@@ -1,4 +1,4 @@
-NAME =	philosophers
+NAME =	philo
 
 PAR =	1 800 200 200
 FLAGS =	-Wall -Werror -Wextra
@@ -11,8 +11,8 @@ CC	=	gcc
 
 $(NAME): $(OBJ)
 	@echo "[Removing last version...]"
-	@rm -rf philosophers
-	@echo "[philosophers compilation...]"
+	@rm -rf philo
+	@echo "[philo compilation...]"
 	@$(CC) $(SRCS) -o $(NAME) -lpthread
 	@echo "[Done!]"
 	@$(MAKE) clean
