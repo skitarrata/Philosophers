@@ -6,7 +6,7 @@
 /*   By: grusso <grusso@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/16 14:47:06 by grusso            #+#    #+#             */
-/*   Updated: 2021/10/16 14:47:07 by grusso           ###   ########.fr       */
+/*   Updated: 2021/10/16 14:57:05 by grusso           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	ft_parse(char *str)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (str[++i])
@@ -22,9 +22,9 @@ static void	ft_parse(char *str)
 			ft_error(BAD_PAR);
 }
 
-void		ft_init_philo(t_rules *rules)
+void	ft_init_philo(t_rules *rules)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < rules->n_philo)
@@ -37,9 +37,9 @@ void		ft_init_philo(t_rules *rules)
 	}
 }
 
-void		ft_init_mutex(t_rules *rules)
+void	ft_init_mutex(t_rules *rules)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < rules->n_philo)

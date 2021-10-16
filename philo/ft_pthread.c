@@ -6,7 +6,7 @@
 /*   By: grusso <grusso@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/16 14:47:04 by grusso            #+#    #+#             */
-/*   Updated: 2021/10/16 14:47:04 by grusso           ###   ########.fr       */
+/*   Updated: 2021/10/16 14:55:28 by grusso           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_exit(t_rules *rules, t_philo *phi)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < rules->n_philo && phi[i].pos != 1)
@@ -23,13 +23,6 @@ void	ft_exit(t_rules *rules, t_philo *phi)
 	while (++i < rules->n_philo)
 		pthread_mutex_destroy(&(rules->forks[i]));
 	pthread_mutex_destroy(&(rules->meal));
-}
-
-void ft_one_philo(t_philo *phi, t_rules *rules)
-{
-	pthread_mutex_lock(&rules->forks[phi->fork_left]);
-	ft_print(rules, phi->pos, TAKE);
-	phi->l_meal = ft_time();
 }
 
 void	ft_meal(t_philo *phi, t_rules *rules)
@@ -48,10 +41,10 @@ void	ft_meal(t_philo *phi, t_rules *rules)
 	pthread_mutex_unlock(&rules->forks[phi->fork_right]);
 }
 
-void	*ft_thread (void *arg)
+void	*ft_thread(void *arg)
 {
-	t_philo *phi;
-	t_rules *rules;
+	t_philo	*phi;
+	t_rules	*rules;
 
 	phi = (t_philo *)arg;
 	rules = phi->rules;
@@ -69,9 +62,9 @@ void	*ft_thread (void *arg)
 	return (NULL);
 }
 
-void ft_death_loop(t_rules *rules, t_philo *phi)
+void	ft_death_loop(t_rules *rules, t_philo *phi)
 {
-	int i;
+	int	i;
 
 	while (!rules->all_ate)
 	{
@@ -89,18 +82,19 @@ void ft_death_loop(t_rules *rules, t_philo *phi)
 		if (rules->dieded)
 			break ;
 		i = 0;
-		while (rules->n_eat != -1 && phi[i].cnt >= rules->n_eat && i < rules->n_philo)
+		while (rules->n_eat != -1 && phi[i].cnt >= rules->n_eat
+			&& i < rules->n_philo)
 			i++;
 		if (i == rules->n_philo)
 			rules->all_ate = 1;
 	}
 }
 
-void	ft_philo (t_rules *rules)
+void	ft_philo(t_rules *rules)
 {
-	int i;
-	t_philo *phi;
-	int err;
+	int		i;
+	t_philo	*phi;
+	int		err;
 
 	phi = rules->philo;
 	rules->start = ft_time();

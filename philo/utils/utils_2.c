@@ -6,7 +6,7 @@
 /*   By: grusso <grusso@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/16 14:46:57 by grusso            #+#    #+#             */
-/*   Updated: 2021/10/16 14:46:58 by grusso           ###   ########.fr       */
+/*   Updated: 2021/10/16 15:03:34 by grusso           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	ft_usleep(int length)
 
 void	ft_print(t_rules *rules, int phil, char *str)
 {
-	long int nb;
+	long int	nb;
 
 	nb = ft_time() - rules->start;
 	if (!rules->dieded)

@@ -6,21 +6,28 @@
 /*   By: grusso <grusso@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/16 14:47:00 by grusso            #+#    #+#             */
-/*   Updated: 2021/10/16 14:47:01 by grusso           ###   ########.fr       */
+/*   Updated: 2021/10/16 15:03:20 by grusso           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../header/philosophers.h"
 
 int	ft_strlen(const char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
 		i++;
 	return (i);
+}
+
+int	ft_return_atoi(int s)
+{
+	if (s == 1)
+		return (-1);
+	else
+		return (0);
 }
 
 int	ft_atoi(const char *str)
@@ -32,8 +39,8 @@ int	ft_atoi(const char *str)
 	i = 0;
 	s = 1;
 	res = 0;
-	while (str[i] == ' ' || str[i] == '\n' || str[i] == '\t' ||
-			str[i] == '\f' || str[i] == '\v' || str[i] == '\r')
+	while (str[i] == ' ' || str[i] == '\n' || str[i] == '\t'
+		|| str[i] == '\f' || str[i] == '\v' || str[i] == '\r')
 		i++;
 	if (str[i] == '-' || str[i] == '+')
 	{
@@ -49,5 +56,5 @@ int	ft_atoi(const char *str)
 	}
 	if ((res == 2147483648 && s == -1) || res <= 2147483648)
 		return (res * s);
-	return (s == 1 ? -1 : 0);
+	return (ft_return_atoi(s));
 }
